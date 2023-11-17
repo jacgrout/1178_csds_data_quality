@@ -1,0 +1,103 @@
+# COMMISSIONER CODE A MIX OF NEW ICB CODES AND OLD COMMISSIONER CODES
+# contacts %>% 
+# as_tibble() %>% 
+#   count(OrgID_Commissioner, sort = T) %>% 
+#   print(n= 50) 
+# COULD ALSO DEFINE BY COMMISSIONER. REGISTRANT POP.
+
+# contacts <- read_rds("231116_contacts_reverso.rds") %>% as_tibble()
+contacts <- read_rds("231116_contacts_commissioner_based.rds")
+
+gc()
+
+# contacts %>% colnames()
+# 
+# contacts %>% 
+#   head(100) %>% 
+#   view()
+
+contacts <- contacts %>% 
+  select(-OrgID_Provider, -n, -record) %>% 
+  rename(
+    derived_icb_reg = OrgIDICBRes.x,
+    OrgIDICBRes = OrgIDICBRes.y,
+    OrgID_Provider = provider
+    )
+
+# contacts <- contacts %>% 
+#   select(-n, -record)
+
+# contacts %>% count(derived_icb_reg)
+
+contacts <- contacts %>% 
+  mutate(derived_icb_reg_name = case_when(
+    derived_icb_reg == "QHM" ~"North East and North Cumbria ICB",
+    derived_icb_reg == "QT1" ~ "Nottingham and Nottinghamshire ICB",
+    derived_icb_reg == "QXU" ~ "Surrey Heartlands ICB",
+  TRUE ~ NA_character_
+)) 
+
+contacts %>% colnames()
+# main providers (accounting for 98% of contacts in each icb)
+# 13 overall .982
+# 19 overall .996
+providers_major <-
+  contacts %>% 
+  count(derived_icb_reg_name, OrgID_Provider, sort= T) %>% 
+  group_by(derived_icb_reg_name) %>%
+  mutate(p = n/sum(n)) %>% 
+  mutate(cs = cumsum(p)) %>% 
+  ungroup %>% 
+  arrange(derived_icb_reg_name) %>% 
+  # filter(cs < .982 ) %>% 
+  filter(cs < .996 ) %>%
+  # print(n=200)
+  pull(OrgID_Provider)
+  
+# providers_major %>%  saveRDS("providers_major.rds")
+
+  
+  
+  # nest() %>% 
+  # mutate(data2 = map(data, function(df) {
+  #   df %>% 
+  #     slice(1:10)
+  # } )) %>% 
+  # unnest(data2) %>% 
+  # ungroup 
+
+# a. provider timeseries --------------------------------------------------
+
+preplot_providers_major <- contacts %>% 
+  filter(OrgID_Provider %in% providers_major) %>% 
+  count(derived_icb_reg_name, OrgID_Provider, month) %>%  
+  # TO REMOVE ODD CROSS-COUNTRY VISITS:
+  # filter(n >49) %>%
+  filter(n >199) %>%
+  # print(n=200) %>%
+  identity()
+
+
+preplot_providers_major %>% 
+  ggplot()+
+  geom_line(aes(month, n, colour = OrgID_Provider, group = OrgID_Provider))+
+  geom_point(aes(month, n, colour = OrgID_Provider, group = OrgID_Provider), size = 2, alpha = .2 )+
+  theme(
+    legend.position = "none",
+    axis.title = element_blank()
+  )+
+  geom_blank(aes(y=0))+
+  geom_text(
+    data = preplot_providers_major %>% 
+      filter(month == "Aug"),
+    aes(month, n, label = OrgID_Provider), colour = "grey50", size = 3, nudge_y = 500, nudge_x = -.5
+  )+
+  scale_y_continuous(label = scales::comma)+
+  facet_wrap(vars(derived_icb_reg_name), scales = "free_y")
+
+# providers_major %>% 
+#   mutate(n2 = n) %>% 
+#   select(-data) %>% 
+#   gt %>% 
+#   gt_plt_bar_pct(column = n2, scaled = F, fill = "#CD5555", background = "#E5E5E5" ) %>% #
+#   cols_align("center", contains("scale"))
