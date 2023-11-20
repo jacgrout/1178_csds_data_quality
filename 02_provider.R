@@ -1,5 +1,10 @@
+# IDENTIFY SUBSET OF PROVIDERS AND PLOT TIMESERIES OF CONTACTS
 
 # contacts <- read_rds("231116_contacts_commissioner_based.rds")
+# contacts %>% colnames()
+
+
+# a. tidy contacts --------------------------------------------------------
 
 contacts <- contacts %>% 
   select(-OrgID_Provider, -n, -record) %>% 
@@ -18,7 +23,9 @@ contacts <- contacts %>%
   TRUE ~ NA_character_
 )) 
 
-contacts %>% colnames()
+
+# b. identify subset of providers -----------------------------------------
+
 # main providers (accounting for > 99% of contacts in each icb)
 # 13 overall .982
 # 19 overall .996
@@ -37,17 +44,7 @@ providers_major <-
   
 # providers_major %>%  saveRDS("providers_major.rds")
 
-  
-  
-  # nest() %>% 
-  # mutate(data2 = map(data, function(df) {
-  #   df %>% 
-  #     slice(1:10)
-  # } )) %>% 
-  # unnest(data2) %>% 
-  # ungroup 
-
-# a. provider timeseries --------------------------------------------------
+# c. plot provider timeseries --------------------------------------------------
 
 preplot_providers_major <- contacts %>% 
   filter(OrgID_Provider %in% providers_major) %>% 
@@ -75,10 +72,3 @@ preplot_providers_major %>%
   )+
   scale_y_continuous(label = scales::comma)+
   facet_wrap(vars(derived_icb_reg_name), scales = "free_y")
-
-# providers_major %>% 
-#   mutate(n2 = n) %>% 
-#   select(-data) %>% 
-#   gt %>% 
-#   gt_plt_bar_pct(column = n2, scaled = F, fill = "#CD5555", background = "#E5E5E5" ) %>% #
-#   cols_align("center", contains("scale"))
