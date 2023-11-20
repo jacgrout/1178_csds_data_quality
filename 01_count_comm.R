@@ -1,6 +1,9 @@
 
 tb_201_contact <- tbl(con_community, in_schema("csds", "PublishCYP201CareContact"))  
 
+
+# a. contacts ---------------------------------------------------------------
+
 raw_contact <- tb_201_contact %>% 
   filter(
     (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
@@ -34,7 +37,8 @@ raw_contact <- tb_201_contact %>%
 
 gc()
 
-# BECAUSE SOME PROVIDERS SUBMIT IDENTICAL RECORDS 4 TIMES:
+
+# BECAUSE SOME PROVIDERS SUBMIT SEEMINGLY IDENTICAL RECORDS 4 TIMES:
 prep_contacts <- raw_contact %>% 
   mutate(month = month(Contact_Date, label = T)) %>% 
   tidytable::mutate(
@@ -47,10 +51,7 @@ prep_contacts <- raw_contact %>%
 rm(raw_contact)
 gc()
 
-# TODO check commissioner codes from contacts are represented.
-prep_contacts %>% count(OrgID_Commissioner, sort = T)
-contacts %>% count(OrgID_Commissioner, sort = T)
-
+# CREATE ICB REGISTERED FIELD BASED ON REGISTERED COMMISSIONER :
 prep_contacts <- prep_contacts %>% 
   mutate(OrgIDICBReg = case_when(
     OrgID_Commissioner %in% c("16C", "84H", "13T", "01H", "00L", "00P", "99C", "00N") ~ "QHM", # CUMB
@@ -67,24 +68,14 @@ prep_contacts <- prep_contacts %>%
     TRUE ~ NA_character_
   ))
 
-# OrgIDICBRes == "QHM" ~   "North East and North Cumbria ICB",
-# OrgIDICBRes == "QT1" ~   "Nottingham and Nottinghamshire ICB",
-# OrgIDICBRes == "QXU" ~"Surrey Heartlands ICB",
-# 
-
-prep_contacts %>% 
-  count(is.na(OrgIDICBRes))
-
-method_commies <- prep_contacts %>% 
-  count(month, OrgIDICBRes)
-
-prep_contacts %>% saveRDS("231116prep_contacts.rds")
 
 
-# b. Person ---------------------------------------------------------------
+# b. person details (MPI) ---------------------------------------------------------------
+
 tb_001_mpi <- tbl(con_community, in_schema("csds", "PublishCYP001MPI"))  
 
-# ALL PERSON RECORDS WITHIN CATCHMENT: 
+# USING BRUTE FORCE APPROACH WHICH IS ONLY POSSIBLE GIVEN SHORT PERIOD OF INTEREST.
+# ALL OLDER PERSON RECORDS MARCH TO AUGUST 
 raw_person <- tb_001_mpi %>%
   # colnames()
   filter(
@@ -92,14 +83,6 @@ raw_person <- tb_001_mpi %>%
     |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>%
   # TO NARROW THE RESULTS:
   filter(AgeYr_RP_StartDate > 63 | is.na(AgeYr_RP_StartDate)) %>% # 
-  # EVALATE PROV/CCG VECTORS LOCALLY BEFORE CONVERTING TO SQL:
-  # filter(
-  #   OrgID_CCG_Residence %in% local(vec_ccg)
-  #   |
-  #     is.na(OrgID_CCG_Residence)|
-  #     OrgID_Provider %in% local(vec_providers)
-  # ) %>%
-  # count()
   select(
     Person_ID, 
     Gender,
@@ -129,10 +112,11 @@ raw_person <- tb_001_mpi %>%
 
 gc()
 
+# DISTINCT PERSON IDs IN CONTACTS
 pid <- prep_contacts %>% distinct(Person_ID) %>% filter(!is.na(Person_ID))
 
 
-# # SELECT PERSON RECORDS WITHIN CATCHMENT THAT MATCH PERSON IDS IN CONTACTS
+# # SELECT PERSON RECORDS WITHIN CATCHMENT THAT MATCH PERSON IDs IN CONTACTS
 prep_person <- raw_person %>%
   right_join(pid, by = "Person_ID")
 
@@ -148,10 +132,9 @@ prep_person <- prep_person %>%
 
 # c. join -----------------------------------------------------------------
 
-prep <- prep_contacts %>%  
+contacts <- prep_contacts %>%  
   left_join(
     prep_person, 
     by = c("Person_ID", "RecordNumber")
   )
 
-prep %>% saveRDS("231116_contacts_commissioner_based.rds")

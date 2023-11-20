@@ -1,20 +1,5 @@
-# COMMISSIONER CODE A MIX OF NEW ICB CODES AND OLD COMMISSIONER CODES
-# contacts %>% 
-# as_tibble() %>% 
-#   count(OrgID_Commissioner, sort = T) %>% 
-#   print(n= 50) 
-# COULD ALSO DEFINE BY COMMISSIONER. REGISTRANT POP.
 
-# contacts <- read_rds("231116_contacts_reverso.rds") %>% as_tibble()
-contacts <- read_rds("231116_contacts_commissioner_based.rds")
-
-  gc()
-
-# contacts %>% colnames()
-# 
-# contacts %>% 
-#   head(100) %>% 
-#   view()
+# contacts <- read_rds("231116_contacts_commissioner_based.rds")
 
 contacts <- contacts %>% 
   select(-OrgID_Provider, -n, -record) %>% 
@@ -24,10 +9,6 @@ contacts <- contacts %>%
     OrgID_Provider = provider
     )
 
-# contacts <- contacts %>% 
-#   select(-n, -record)
-
-# contacts %>% count(derived_icb_reg)
 
 contacts <- contacts %>% 
   mutate(derived_icb_reg_name = case_when(
@@ -38,7 +19,7 @@ contacts <- contacts %>%
 )) 
 
 contacts %>% colnames()
-# main providers (accounting for 98% of contacts in each icb)
+# main providers (accounting for > 99% of contacts in each icb)
 # 13 overall .982
 # 19 overall .996
 providers_major <-
