@@ -176,14 +176,15 @@ rm(prep_disability)
 gc()
 
 b %>% saveRDS("231117_contacts_full.rds")
+b <- read_rds("231117_contacts_full.rds")
 
 # complete ----------------------------------------------------------------
 
 b <- b %>% 
   rename(
-    SecDiag_sch04= scheme_diag04, 
-    SecDiag_sch05= scheme_diag05, 
-    SecDiag_sch06= scheme_diag06 
+    SecDiag_sch04 = scheme_diag04, 
+    SecDiag_sch05 = scheme_diag05, 
+    SecDiag_sch06 = scheme_diag06 
   )
 
 b %>% 
@@ -193,8 +194,9 @@ b %>%
 
 b <- b %>%
   select(
-    -c(Person_ID, RecordNumber, ServiceRequestID, CareContactID,
-       Effective_From, TeamID_Local,
+    -c(
+      # Person_ID, RecordNumber, ServiceRequestID, CareContactID,
+      #  Effective_From, TeamID_Local,
        # starts_with("derived"),
        n.x, n.y, n))
   

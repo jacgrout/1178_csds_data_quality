@@ -8,7 +8,7 @@
 # contacts <- read_rds("231116_contacts_reverso.rds") %>% as_tibble()
 contacts <- read_rds("231116_contacts_commissioner_based.rds")
 
-gc()
+  gc()
 
 # contacts %>% colnames()
 # 
