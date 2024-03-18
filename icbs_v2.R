@@ -4,7 +4,9 @@
 #   destfile = "lsoa_sicbl_icb.csv"
 # )
 
-lkp_icb <- read_csv("lsoa_sicbl_icb.csv") %>% 
+#Had to replace above with manual obtaining of this file
+
+lkp_icb <- read_csv("lsoa_sicbl_icb.csv") |> 
   janitor::clean_names()
 
 lkp_icb <- lkp_icb %>% 
@@ -13,10 +15,11 @@ lkp_icb <- lkp_icb %>%
     icb22cd, icb22cdh, icb22nm,
     sicbl22cdh, sicbl22nm,
     lad22cd, lad22nm) %>%
-  mutate(suffix = as.numeric(str_sub(icb22cd, -2, -1))) %>%
+  mutate(suffix = as.numeric(str_sub(icb22cd, -2, -1))) 
+#%>%
   # count(icb22nm, suffix) %>% 
   # print(n=50)
-  filter(suffix %in% c(50, 52, 60)) 
+ # filter(suffix %in% c(50, 52, 60)) 
 
 
 lkp_ccg_icb <- lkp_icb %>% 

@@ -38,6 +38,16 @@ source("icbs_v2.r")
 # )
 
 
+# Connection ----
+con_community <- dbConnect(odbc(), 
+                           driver = "ODBC Driver 18 for SQL Server",
+                           server = "PRODNHSESQL101",
+                           Encrypt = "Optional", 
+                           Trusted_connection = "yes",
+                           database = "NHSE_DataLanding_Community"
+)
+
+
 # b. ANALYSIS -------------------------------------------------------------
 
 

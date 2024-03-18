@@ -1,6 +1,36 @@
 
 tb_201_contact <- tbl(con_community, in_schema("csds", "PublishCYP201CareContact"))  
 
+tb_101_referral <- tbl(con_community, in_schema("csds", "PublishCYP101Referral"))
+
+tb_102_service <- tbl(con_community, in_schema("csds", "PublishCYP102ServiceTypeReferredTo"))
+
+# referrals -----------------------------------------------------------------
+raw_referral <- tb_101_referral |>
+  filter(Person_ID=="0HC0162QETFFCI8") |>
+  select(RecordNumber, Person_ID, Discharge_Date, AuditId,ServiceRequestID, LocalPatientID, ReferralRequest_ReceivedDate,
+         Effective_From, UniqueSubmissionID) |>
+  collect()
+
+# services -----------------------------------------------------------------
+raw_services <- tb_102_service  |>
+  filter(ServiceRequestID=="33723994" | ServiceRequestID=="33724178") |>
+  select(ServiceRequestID, AuditId, TeamType, TeamID_Local, Referral_ClosureDate, Referral_RejectionDate, Referral_ClosureReason,
+         Referral_RejectionReason, Effective_From, RecordNumber, Person_ID) |>
+  collect()
+
+raw_services_rmp <- tb_102_service  |>
+  filter(OrgID_Provider=="RMP") |>
+  select(ServiceRequestID, AuditId, TeamType, TeamID_Local, Referral_ClosureDate, Referral_RejectionDate, Referral_ClosureReason,
+         Referral_RejectionReason, Effective_From, RecordNumber, Person_ID) |>
+  collect()
+
+raw_services_rmp |>
+  group_by(TeamType) |>
+  summarise(count_services = n()) |>
+  print(n=29)
+
+
 
 # a. contacts ---------------------------------------------------------------
 
@@ -37,15 +67,26 @@ raw_contact <- tb_201_contact %>%
 
 gc()
 
+raw_contact2 <- raw_contact |> filter(Person_ID=="0HC0162QETFFCI8")
+
 
 # BECAUSE SOME PROVIDERS SUBMIT SEEMINGLY IDENTICAL RECORDS 4 TIMES:
 prep_contacts <- raw_contact %>% 
-  mutate(month = month(Contact_Date, label = T)) %>% 
+  mutate(month = month(Contact_Date, label = TRUE)) %>% 
   tidytable::mutate(
     n = tidytable::row_number(),
     .by = c(month, OrgID_Provider, CareContactID)) %>%
   filter(n == 1) %>% 
   rename(provider = OrgID_Provider)
+
+temp <- prep_contacts |> filter(CareContactID=="EMC0005097728")
+
+temp <- raw_contact |> filter(CareContactID="EMC0005097728")
+
+raw_referral2 <- raw_referral |> filter(RecordNumber=="6513450000040163"|
+                                         RecordNumber=="6757316000040172")
+
+raw_referral3 <- raw_referral |> filter(RecordNumber=="6513027000040290")
 
 # TO SAVE MEMORY:
 rm(raw_contact)
