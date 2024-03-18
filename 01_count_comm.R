@@ -19,16 +19,15 @@ raw_services <- tb_102_service  |>
          Referral_RejectionReason, Effective_From, RecordNumber, Person_ID) |>
   collect()
 
-raw_services_rmp <- tb_102_service  |>
-  filter(OrgID_Provider=="RMP") |>
+raw_services <- tb_102_service  |>
+ # filter(OrgID_Provider=="RMP") |>
   select(ServiceRequestID, AuditId, TeamType, TeamID_Local, Referral_ClosureDate, Referral_RejectionDate, Referral_ClosureReason,
          Referral_RejectionReason, Effective_From, RecordNumber, Person_ID) |>
   collect()
 
-raw_services_rmp |>
+temp_table_all <- raw_services |>
   group_by(TeamType) |>
-  summarise(count_services = n()) |>
-  print(n=29)
+  summarise(count_services = n()) 
 
 
 

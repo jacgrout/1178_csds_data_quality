@@ -6,7 +6,7 @@
 
 #Had to replace above with manual obtaining of this file
 
-lkp_icb <- read_csv("lsoa_sicbl_icb.csv") |> 
+lkp_icb <- read_csv("secret/lsoa_sicbl_icb.csv") |> 
   janitor::clean_names()
 
 lkp_icb <- lkp_icb %>% 
