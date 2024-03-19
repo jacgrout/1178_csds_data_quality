@@ -34,10 +34,8 @@ temp_table_all <- raw_services |>
 # a. contacts ---------------------------------------------------------------
 
 raw_contact <- tb_201_contact %>% 
-  filter(
-    (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
-    |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>%
-  filter(AgeYr_Contact_Date > 64 & AgeYr_Contact_Date < 110) %>% # 
+  filter(Der_Financial_Year == "2023/24") %>%
+ # filter(AgeYr_Contact_Date > 64 & AgeYr_Contact_Date < 110) %>% # 
   # EVALATE PROV/CCG VECTORS LOCALLY BEFORE CONVERTING TO SQL:
   filter(
     OrgID_Commissioner %in% local(vec_ccg)
@@ -66,7 +64,7 @@ raw_contact <- tb_201_contact %>%
 
 gc()
 
-raw_contact2 <- raw_contact |> filter(Person_ID=="0HC0162QETFFCI8")
+#raw_contact2 <- raw_contact |> filter(Person_ID=="0HC0162QETFFCI8")
 
 
 # BECAUSE SOME PROVIDERS SUBMIT SEEMINGLY IDENTICAL RECORDS 4 TIMES:
@@ -94,35 +92,32 @@ gc()
 # CREATE ICB REGISTERED FIELD BASED ON REGISTERED COMMISSIONER :
 prep_contacts <- prep_contacts %>% 
   mutate(OrgIDICBReg = case_when(
-    OrgID_Commissioner %in% c("16C", "84H", "13T", "01H", "00L", "00P", "99C", "00N") ~ "QHM", # CUMB
-    OrgID_Commissioner %in% c("52R", "02Q", "04E",
-                               "04H",
-                               "04L",
-                               "04M",
-                               "04N",
-                               "04K") ~ "QT1", # NOTTS
-    OrgID_Commissioner %in% c("92A", "09L",
-                              "09N",
-                              "09Y",
-                              "99H" ) ~ "QXU",
+    OrgID_Commissioner %in% c("15N") ~ "QJK", # DEVON
+    OrgID_Commissioner %in% c("00Q", "00R", "01A",
+                               "01K",
+                               "00X",
+                               "02M",
+                               "01E",
+                               "02G") ~ "QE1", # LANC SOUTH CUMB
+    OrgID_Commissioner %in% c("18C", "07H",
+                              "06K",
+                              "06N" ) ~ "QM7",
     TRUE ~ NA_character_
   ))
 
-
+prep_contacts_nhp <-prep_contacts %>% filter(OrgIDICBReg %in% c("QJK","QE1","QM7"))
 
 # b. person details (MPI) ---------------------------------------------------------------
 
 tb_001_mpi <- tbl(con_community, in_schema("csds", "PublishCYP001MPI"))  
 
 # USING BRUTE FORCE APPROACH WHICH IS ONLY POSSIBLE GIVEN SHORT PERIOD OF INTEREST.
-# ALL OLDER PERSON RECORDS MARCH TO AUGUST 
+
 raw_person <- tb_001_mpi %>%
   # colnames()
-  filter(
-    (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
-    |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>%
+  filter(Der_Financial_Year == "2023/24") %>%
   # TO NARROW THE RESULTS:
-  filter(AgeYr_RP_StartDate > 63 | is.na(AgeYr_RP_StartDate)) %>% # 
+  #filter(AgeYr_RP_StartDate > 63 | is.na(AgeYr_RP_StartDate)) %>% # 
   select(
     Person_ID, 
     Gender,
@@ -153,7 +148,7 @@ raw_person <- tb_001_mpi %>%
 gc()
 
 # DISTINCT PERSON IDs IN CONTACTS
-pid <- prep_contacts %>% distinct(Person_ID) %>% filter(!is.na(Person_ID))
+pid <- prep_contacts_nhp %>% distinct(Person_ID) %>% filter(!is.na(Person_ID))
 
 
 # # SELECT PERSON RECORDS WITHIN CATCHMENT THAT MATCH PERSON IDs IN CONTACTS

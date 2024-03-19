@@ -5,7 +5,7 @@ curl::curl_download(
   destfile = "csds_submission_tracker.xlsx"
 )
 
-providers_dacha <- 
+providers_nhp <- 
   readxl::read_excel(
     "csds_submission_tracker.xlsx", 
     sheet = "Monthly submissions",
@@ -13,10 +13,10 @@ providers_dacha <-
   ) %>% 
   janitor::clean_names() 
 
-providers_dacha <- providers_dacha %>% 
+providers_nhp <- providers_nhp %>% 
   filter(
-    str_detect(icb_name, "NORTH CUMB")| str_detect(icb_name, "SURREY")|
-    str_detect(icb_name, "NOTT")
+    str_detect(icb_name, "SOUTH CUMBRIA")| str_detect(icb_name, "DEVON")|
+    str_detect(icb_name, "HERTFORDSHIRE")
       ) %>% 
   count(icb_name, provider, orgcode) %>% 
   # print(n=40)
@@ -24,4 +24,4 @@ providers_dacha <- providers_dacha %>%
   # mutate(provider_name = str_to_title(provider_name))
   identity()
 
-vec_providers <- providers_dacha %>% pull(provider_code)
+vec_providers <- providers_nhp %>% pull(provider_code)

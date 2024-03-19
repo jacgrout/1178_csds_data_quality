@@ -20,7 +20,7 @@ theme_set(theme_bw())
 
 # a. SETUP ----------------------------------------------------------------
 
-# CODES FOR 3 DACHA ICBs:
+# CODES FOR 3 ICBs:
 source("icbs_v2.r")
 
 # ULTIMATELY NOT USED BUT MAY BE USEFUL AT SOME STAGE:

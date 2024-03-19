@@ -17,9 +17,9 @@ contacts <- contacts %>%
 
 contacts <- contacts %>% 
   mutate(derived_icb_reg_name = case_when(
-    derived_icb_reg == "QHM" ~"North East and North Cumbria ICB",
-    derived_icb_reg == "QT1" ~ "Nottingham and Nottinghamshire ICB",
-    derived_icb_reg == "QXU" ~ "Surrey Heartlands ICB",
+    derived_icb_reg == "QJK" ~"Devon ICB",
+    derived_icb_reg == "QM7" ~ "Hertfordshire and West Essex ICB",
+    derived_icb_reg == "QE1" ~ "Lancashire and South Cumbria ICB",
   TRUE ~ NA_character_
 )) 
 

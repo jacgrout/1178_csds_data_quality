@@ -33,19 +33,19 @@ vec_ccg <- lkp_icb %>% count(sicbl22cdh, sort = T) %>% pull(sicbl22cdh)
 
 # WORTH INCLUDING FORMER CCG CODES:
 # (POSSIBLY LESS OF AN ISSUE IN 2023 (?) BUT IN PREVIOUS YEARS IT'S NECESSARY)
-legacy_codes <- c(
-  "04E", # notts                  
-  "04H", # notts                  
-  "04L", # notts                  
-  "04M", # notts                  
-  "04N", # notts                  
-  "04K", # notts          
-  "09L", # surrey          
-  "09N", # surrey          
-  "09Y", # surrey          
-  "99H" # surrey          
-)
+# legacy_codes <- c(
+#   "04E", # notts                  
+#   "04H", # notts                  
+#   "04L", # notts                  
+#   "04M", # notts                  
+#   "04N", # notts                  
+#   "04K", # notts          
+#   "09L", # surrey          
+#   "09N", # surrey          
+#   "09Y", # surrey          
+#   "99H" # surrey          
+# )
 
 
-vec_ccg <- c(vec_ccg, legacy_codes)
+#vec_ccg <- c(vec_ccg, legacy_codes)
 
