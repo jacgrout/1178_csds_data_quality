@@ -49,3 +49,6 @@ po/*~
 rsconnect/
 
 /secret
+*.xlsx
+*.png
+*.rds
