@@ -69,7 +69,7 @@ gc()
 
 # 6. ----------------------------------------------------------------------
 
-prep_disability  <- read_rds("join_disability.rds")
+#prep_disability  <- read_rds("join_disability.rds")
 
 
 # 3,858,523
@@ -84,7 +84,7 @@ gc()
 
 # 7. ----------------------------------------------------------------------
 
-prep_diag01 <- read_rds("join_diag01.rds")
+#prep_diag01 <- read_rds("join_diag01.rds")
 
 # 3,858,523
 a <- b %>% 
@@ -139,3 +139,4 @@ b <- b %>%
        # starts_with("derived"),
        n.x, n.y, n))
 
+saveRDS(b,"240322_contacts_full.rds")

@@ -1,21 +1,21 @@
 # IDENTIFY SUBSET OF PROVIDERS AND PLOT TIMESERIES OF CONTACTS
 
-# contacts <- read_rds("231116_contacts_commissioner_based.rds")
-# contacts %>% colnames()
+# contacts <- read_rds("240319_contacts_commissioner_based.rds")
+# contacts |> colnames()
 
 
 # a. tidy contacts --------------------------------------------------------
 
-contacts <- contacts %>% 
-  select(-OrgID_Provider, -n, -record) %>% 
+contacts <- contacts |> 
+  select(-OrgID_Provider, -n, -record) |> 
   rename(
-    derived_icb_reg = OrgIDICBRes.x,
-    OrgIDICBRes = OrgIDICBRes.y,
+    derived_icb_reg = OrgIDICBReg,
+    OrgIDICBRes = OrgIDICBRes,
     OrgID_Provider = provider
     )
 
 
-contacts <- contacts %>% 
+contacts <- contacts |> 
   mutate(derived_icb_reg_name = case_when(
     derived_icb_reg == "QJK" ~"Devon ICB",
     derived_icb_reg == "QM7" ~ "Hertfordshire and West Essex ICB",
@@ -29,16 +29,15 @@ contacts <- contacts %>%
 # main providers (accounting for > 99% of contacts in each icb)
 # 13 overall .982
 # 19 overall .996
-providers_major <-
-  contacts %>% 
-  count(derived_icb_reg_name, OrgID_Provider, sort= T) %>% 
-  group_by(derived_icb_reg_name) %>%
-  mutate(p = n/sum(n)) %>% 
-  mutate(cs = cumsum(p)) %>% 
-  ungroup %>% 
+providers_major <- contacts %>%  
+  count(derived_icb_reg_name, OrgID_Provider, sort= T) %>%  
+  group_by(derived_icb_reg_name) %>% 
+  mutate(p = n/sum(n)) %>%  
+  mutate(cs = cumsum(p)) %>%  
+  ungroup %>%  
   arrange(derived_icb_reg_name) %>% 
-  # filter(cs < .982 ) %>% 
-  filter(cs < .996 ) %>%
+  # filter(cs < .982 ) %>%  
+  filter(cs < .996 ) %>% 
   # print(n=200)
   pull(OrgID_Provider)
   

@@ -173,6 +173,6 @@ contacts <- prep_contacts %>%
     by = c("Person_ID", "RecordNumber")
   )
 
-
+contacts |>  saveRDS("240319_contacts_commissioner_based.rds")
 
 

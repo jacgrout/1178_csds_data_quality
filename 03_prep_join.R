@@ -15,9 +15,7 @@ tb_002_gp <- tbl(con_community, in_schema("csds", "PublishCYP002GP"))
 
 raw_gp <- tb_002_gp %>% 
   # colnames()
-  filter(
-    (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
-    |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>% 
+  filter(Der_Financial_Year == "2023/24") %>% 
   filter(OrgID_Provider %in% local(providers_major)) %>% 
   select(
     OrgID_GP,
@@ -53,9 +51,7 @@ tb_003_acc <- tbl(con_community, in_schema("csds", "PublishCYP003AccommType"))
 
 raw_acc <- tb_003_acc %>% 
   # colnames()
-  filter(
-    (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
-    |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>% 
+  filter(Der_Financial_Year == "2023/24") %>% 
   filter(OrgID_Provider %in% local(providers_major)) %>% 
   select(
     AccommStatus,
@@ -81,9 +77,7 @@ tb_006_soc <- tbl(con_community, in_schema("csds", "PublishCYP006SocPerCircumsta
 # tb_006_soc %>% colnames()
 
 raw_soc <- tb_006_soc %>% 
-  filter(
-    (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
-    |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>% 
+  filter(Der_Financial_Year == "2023/24") %>% 
   filter(OrgID_Provider %in% local(providers_major)) %>% 
   select(
     SNOMED_ID,
@@ -109,9 +103,7 @@ tb_101_ref <- tbl(con_community, in_schema("csds", "PublishCYP101Referral"))
 tb_101_ref %>% colnames()
 
 raw_ref <- tb_101_ref %>% 
-  filter(
-    (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
-    |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>% 
+  filter(Der_Financial_Year == "2023/24") %>% 
   filter(OrgID_Provider %in% local(providers_major)) %>% 
   # count
   select(
@@ -141,9 +133,7 @@ tb_102_ref_to <- tbl(con_community, in_schema("csds", "PublishCYP102ServiceTypeR
 tb_102_ref_to %>% colnames()
 
 raw_ref_to <- tb_102_ref_to %>% 
-  filter(
-    (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
-    |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>% 
+  filter(Der_Financial_Year == "2023/24") %>% 
   filter(OrgID_Provider %in% local(providers_major)) %>% 
   # count
   select(
@@ -178,9 +168,7 @@ tb_602_disability <- tbl(con_community, in_schema("csds", "PublishCYP602Disabili
 # tb_602_disability %>% colnames()
 
 raw_disability <- tb_602_disability %>% 
-  filter(
-    (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
-    |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>% 
+  filter(Der_Financial_Year == "2023/24") %>% 
   filter(OrgID_Provider %in% local(providers_major)) %>% 
   # count
   select(
@@ -207,9 +195,7 @@ tb_607_diag01 <- tbl(con_community, in_schema("csds", "PublishCYP607PrimDiag"))
 # tb_607_diag01 %>% colnames()
 
 raw_diag01 <- tb_607_diag01 %>% 
-  filter(
-    (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
-    |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>% 
+  filter(Der_Financial_Year == "2023/24") %>% 
   filter(OrgID_Provider %in% local(providers_major)) %>% 
   # count
   select(
@@ -243,9 +229,7 @@ tb_608_diag02 <- tbl(con_community, in_schema("csds", "PublishCYP608SecDiag"))
 # tb_608_diag02 %>% colnames()
 
 raw_diag02 <- tb_608_diag02 %>% 
-  filter(
-    (Der_Financial_Year == "2023/24" & Der_Financial_Month %in% local(str_c("0", 1:5))) #%>% 
-    |(Der_Financial_Year == "2022/23" & Der_Financial_Month %in% c("12"))) %>% 
+  filter(Der_Financial_Year == "2023/24") %>% 
   filter(OrgID_Provider %in% local(providers_major)) %>% 
   # count
   select(
