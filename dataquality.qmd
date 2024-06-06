@@ -1,0 +1,85 @@
+---
+title: "Data Quality"
+subtitle: "Devon"
+author: "Jacqueline Grout"
+format: html
+editor: visual
+---
+
+```{r gather_data}
+library(tidyverse)
+library(readxl)
+library(dplyr)
+library(janitor)
+
+b_devon <- readRDS("~/csds_data_quality/b_devon.rds")
+b_lancs <- readRDS("~/csds_data_quality/b_lancs.rds")
+b_herts <- readRDS("~/csds_data_quality/b_herts.rds")
+
+
+devon <- b_devon |>
+  group_by(OrgID_Provider,SourceOfReferral,TeamType,OrgID_GP,derived_icb_reg_name,CareContactID,ServiceRequestID,
+           Person_ID,Contact_Date,AgeYr_Contact_Date,AttendanceStatus,ConsMechanism,Consultation_Type,Activity_LocationType,
+           Days_Referral_to_CareContact,OrgID_Commissioner,month,derived_icb_reg,Gender,AgeYr_RP_StartDate,
+           EthnicCategory,LSOA,OrgIDICBRes,OrgIDSubICBLocResidence)|>
+  count(CareContactID)|>
+  rename(contactnum=n)
+
+herts <- b_herts |>
+  group_by(OrgID_Provider,SourceOfReferral,TeamType,OrgID_GP,derived_icb_reg_name,CareContactID,ServiceRequestID,
+           Person_ID,Contact_Date,AgeYr_Contact_Date,AttendanceStatus,ConsMechanism,Consultation_Type,Activity_LocationType,
+           Days_Referral_to_CareContact,OrgID_Commissioner,month,derived_icb_reg,Gender,AgeYr_RP_StartDate,
+           EthnicCategory,LSOA,OrgIDICBRes,OrgIDSubICBLocResidence)|>
+  count(CareContactID)|>
+  rename(contactnum=n)
+
+lancs <- b_lancs |>
+  group_by(OrgID_Provider,SourceOfReferral,TeamType,OrgID_GP,derived_icb_reg_name,CareContactID,ServiceRequestID,
+           Person_ID,Contact_Date,AgeYr_Contact_Date,AttendanceStatus,ConsMechanism,Consultation_Type,Activity_LocationType,
+           Days_Referral_to_CareContact,OrgID_Commissioner,month,derived_icb_reg,Gender,AgeYr_RP_StartDate,
+           EthnicCategory,LSOA,OrgIDICBRes,OrgIDSubICBLocResidence)|>
+  count(CareContactID)|>
+  rename(contactnum=n)
+
+options(scipen = 999)
+```
+
+## Introduction
+
+Explain background to CSDS and need to explore DQ
+
+This analysis is using April 2023 to February 2024 data.
+
+## Running Code
+
+fprefcewrjfkiremjpwjdew
+
+```{r}
+devon |>
+  ggplot(aes(x=SourceOfReferral, y=contactnum)) + 
+  geom_bar(stat = "identity") +
+  coord_flip()
+
+devon |>
+  ggplot(aes(x=TeamType, y=contactnum)) + 
+  geom_bar(stat = "identity")+
+  coord_flip()
+```
+
+You can add options to executable code like this
+
+```{r}
+devon %>% 
+  tabyl(month,show_na = TRUE) %>% 
+ # adorn_title("combined") %>%
+  adorn_totals(c("row")) %>%
+  adorn_pct_formatting(rounding = "half up", digits = 2) %>%
+#  adorn_ns() %>%
+  rename(`Number of Contacts`=n,
+         `Month`=month,
+         `Percent`=percent) %>% 
+  knitr::kable()  %>% 
+  kableExtra::kable_paper(bootstrap_options = "striped", full_width = F)
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
